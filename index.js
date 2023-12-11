@@ -10,7 +10,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000
 const __dirname = process.cwd();
 app.use(express.json());
 
@@ -25,7 +25,7 @@ const server = new ApolloServer({
 });
 
 const { url } = await startStandaloneServer(server, {
-    listen: { port: 4000 },
+    listen: { port: port },
     context: async ({ req }) => {
         return { database: getDatabase() };
     },

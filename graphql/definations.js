@@ -49,6 +49,8 @@ export const typeDefs = `#graphql
         stop(stpid: ID!): Stop,
         route(rt: ID!): Route
     }
+
+    
 `;
 
 
@@ -95,20 +97,7 @@ export const resolvers = {
         stops1: async (parent, args, context, info) => {
             const database = context.database;
             const collection = await database.collection('stops');
-            console.log(parent.stopdata.stops1);
-            console.log(await collection.find({stpid: {$in: [
-                "53000",
-                "55965",
-                "52752",
-            ]}}).toArray());
-
-            let stops = await collection.find({stpid: {$in: parent.stopdata.stops1}}).toArray();
-            console.log(parent.stopdata.stops1, [
-                "53000",
-                "55965",
-                "52752",
-            ]);
-            return stops;
+            return await collection.find({stpid: {$in: parent.stopdata.stops1}}).toArray();
         },
 
     }
