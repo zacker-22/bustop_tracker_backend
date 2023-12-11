@@ -97,8 +97,32 @@ export const resolvers = {
         stops1: async (parent, args, context, info) => {
             const database = context.database;
             const collection = await database.collection('stops');
-            return await collection.find({stpid: {$in: parent.stopdata.stops1}}).toArray();
+            let stops = await collection.find({stpid: {$in: parent.stopdata.stops1}}).toArray();
+            let stopids = parent.stopdata.stops1;
+           
+            let indexOfStopId = new Map();
+            for(let i = 0; i < stopids.length; i++){
+                indexOfStopId.set(stopids[i], i);
+            }
+            stops.sort((a,b) => {
+                return indexOfStopId.get(a.stpid) - indexOfStopId.get(b.stpid);
+            });
+            return stops;
         },
-
+        stops2: async (parent, args, context, info) => {
+            const database = context.database;
+            const collection = await database.collection('stops');
+            let stops = await collection.find({stpid: {$in: parent.stopdata.stops2}}).toArray();
+            let stopids = parent.stopdata.stops2;
+            
+            let indexOfStopId = new Map();
+            for(let i = 0; i < stopids.length; i++){
+                indexOfStopId.set(stopids[i], i);
+            }
+            stops.sort((a,b) => {
+                return indexOfStopId.get(a.stpid) - indexOfStopId.get(b.stpid);
+            });
+            return stops;
+        }
     }
 };
