@@ -1,11 +1,15 @@
-import {getDatabase} from "../database/database.js"
+import axios from "axios";
+
+
+const ACT_BASE_URL = 'https://api.actransit.org/transit/';
 
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
 // your data.
 export const typeDefs = `#graphql
-  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
+    # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
+    scalar DateTime
 
     # The "Stop" type defines the queryable fields for every stop in our data source.
     type Stop {
@@ -40,6 +44,14 @@ export const typeDefs = `#graphql
         dest2: String,
     }
 
+    type Prd {
+        stpnm: String,
+        stpid: String,
+        rt: String,
+        rtdir: String,
+        prdtm: DateTime
+    }
+
     # The "Query" type is special: it lists all of the available queries that
     # clients can execute, along with the return type for each. In this
     # case, the "stops" query returns an array of zero or more Stops (defined above).
@@ -47,7 +59,8 @@ export const typeDefs = `#graphql
         stops: [Stop],
         routes: [Route],
         stop(stpid: ID!): Stop,
-        route(rt: ID!): Route
+        route(rt: ID!): Route,
+        live(stpids: [String]): [Prd]
     }
 
     
@@ -79,7 +92,18 @@ export const resolvers = {
             const collection = await database.collection('routes');
             let route = await collection.findOne({rt: args.rt});
             return route;
+        },
+        live: async (parent, args, context, info) => {
+
+            const res = await axios.get(`${ACT_BASE_URL}actrealtime/prediction?token=${process.env.ACT_TOKEN}&stpid=${args.stpids.join(",")}`);
+            if(res.status != 200){
+                return [];
+            }
+            let predictions = res.data["bustime-response"]["prd"];
+            return predictions;
+
         }
+       
     },
     Route: {
         dest1: async (parent, args, context, info) => {
