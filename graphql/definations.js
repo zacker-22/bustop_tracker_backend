@@ -73,12 +73,18 @@ export const resolvers = {
             const database = context.database;
             const collection = database.collection('stops');
             let stops = await collection.find().toArray();
+            stops.sort((a,b) => {
+                return a.stpnm.localeCompare(b.stpnm);
+            });
             return stops;
         },
         routes: async (parent, args, context, info) => {
             const database = context.database;
             const collection = await database.collection('routes');
             let routes = await collection.find().toArray();
+            routes.sort((a,b) => {
+                return a.rt.localeCompare(b.rt);
+            });
             return routes;
         },
         stop: async (parent, args, context, info) => {
