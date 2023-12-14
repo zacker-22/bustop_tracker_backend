@@ -1,6 +1,8 @@
 import {getDatabase} from '../database/database.js';
 import axios from 'axios';
 
+
+
 const ACT_BASE_URL = 'https://api.actransit.org/transit/';
 
 
@@ -24,11 +26,6 @@ const updateStops = async () => {
     for(let i = 0; i < stops.length; i++){
         promises.push(collection.updateOne({stpid: stops[i].stpid}, {$set: stops[i]}, {upsert: true}));
     }
-
-    
-    
-    // let stops = await collection.find().toArray();
-    // console.log(stops["bustime-response"]["stops"][0]);
     
     return Promise.all(promises);
 }
@@ -41,10 +38,7 @@ export const updateRoutes = async () => {
         return Promise.resolve();
     }
 
-    // console.log(routesResponse.data);
     let routes = routesResponse.data["bustime-response"]["routes"];
-    
-    // console.log(routes[0]);
 
     const database = getDatabase();
     const collection = database.collection('routes');
@@ -72,17 +66,10 @@ export const updateRoutes = async () => {
         }));
         
     }
-
    
-
-   
-
-
-    
     return Promise.all(promises)
 }
 
-// updateRoutes();
 
 export const updateDB = async () => {
     const promise1 = updateStops();

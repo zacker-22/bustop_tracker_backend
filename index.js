@@ -4,6 +4,7 @@ import {updateDB} from './cronjobs/updateDB.js';
 import {typeDefs, resolvers} from './graphql/definations.js';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
+import cron from 'node-cron';
 
 
 import dotenv from 'dotenv';
@@ -16,7 +17,10 @@ app.use(express.json());
 
 await connectToDatabase();
 
-
+cron.schedule('0 2 * * *', () => {
+    console.log(`Updating database at ${new Date() }}`);
+    updateDB();
+});
 // await updateDB();
 
 const server = new ApolloServer({
