@@ -5,6 +5,7 @@ import {typeDefs, resolvers} from './graphql/definations.js';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import cron from 'node-cron';
+import cors from 'cors';
 
 
 import dotenv from 'dotenv';
@@ -13,6 +14,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000
 const __dirname = process.cwd();
+app.use(cors());
 app.use(express.json());
 
 await connectToDatabase();
