@@ -144,7 +144,9 @@ export const resolvers = {
             const collection = await database.collection('stops');
             let stops = await collection.find({stpid: {$in: parent.stopdata.stops2}}).toArray();
             let stopids = parent.stopdata.stops2;
-            
+            if(!parent.stopdata.stops2){
+                return [];
+            }
             let indexOfStopId = new Map();
             for(let i = 0; i < stopids.length; i++){
                 indexOfStopId.set(stopids[i], i);
